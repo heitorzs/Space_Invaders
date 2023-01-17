@@ -1,11 +1,17 @@
-const canvas = document.querySelector('canvas')
-const scoreEl = document.querySelector('#scoreEL')
+const canvas = document.querySelector('canvas');
+const scoreEl = document.querySelector('#scoreEL');
 const c = canvas.getContext('2d');
 
 canvas.width = innerWidth;
 canvas.height = innerHeight;
 
+function preLoadsound(){
+    backgroundMusic = document.querySelector('#backgroundMusic').play();
+    shootSound = document.querySelector('#shoot').play();
+    enemyShoot = document.querySelector('#enemyShoot').play();
+    explode = document.querySelector('#explode').play();
 
+}
 class Player {
     constructor() {
 
@@ -111,20 +117,20 @@ class Particle {
 
 class InvaderProjectiles {
     constructor({ position, velocity }) {
-        this.position = position
-        this.velocity = velocity
+        this.position = position;
+        this.velocity = velocity;
 
-        this.width = 3
-        this.height = 5
+        this.width = 3;
+        this.height = 5;
     }
     draw() {
-        c.fillStyle = 'red'
-        c.fillRect(this.position.x, this.position.y, this.width, this.height)
+        c.fillStyle = 'red';
+        c.fillRect(this.position.x, this.position.y, this.width, this.height);
     }
     update() {
-        this.draw()
-        this.position.x += this.velocity.x
-        this.position.y += this.velocity.y
+        this.draw();
+        this.position.x += this.velocity.x;
+        this.position.y += this.velocity.y;
     }
 
 }
@@ -163,9 +169,9 @@ class Invader {
     }
     update({ velocity }) {
         if (this.image) {
-            this.draw()
-            this.position.x += velocity.x
-            this.position.y += velocity.y
+            this.draw();
+            this.position.x += velocity.x;
+            this.position.y += velocity.y;
 
         }
     }
@@ -247,6 +253,7 @@ let randomInterval = Math.floor(Math.random() * 500 + 500)
 let game = {
     over: false,
     active: true
+
 }
 for (let i = 0; i < 105; i++) {
     particles.push(new Particle({
@@ -287,6 +294,7 @@ function animate() {
     c.fillStyle = 'black'
     c.fillRect(0, 0, canvas.width, canvas.height)
     player.update()
+    backgroundMusic.play()
     particles.forEach((particle, i) => {
         if(particle.position.y - particle.radius >= canvas.height){
             particle.position.x = Math.random() * canvas.width
@@ -305,6 +313,7 @@ function animate() {
             setTimeout(() => {
                 invaderProjectiles.splice(index, 1)
             }, 0)
+            enemyShoot.play()
         } else {
             invaderProjectile.update()
         }
@@ -313,8 +322,9 @@ function animate() {
             invaderProjectile.position.x <= player.position.x + player.width) {
             setTimeout(() => {
                 invaderProjectiles.splice(index, 1)
-                player.opacity = 0
-                game.over = true
+                player.opacity = 0;
+                explode.play();
+                game.over = true;
             }, 0)
             setTimeout(() => {
                 game.active = false
@@ -366,9 +376,10 @@ grids.forEach((grid, gridIndex) => {
                     const projectileFound = projectiles.find((projectile2) => projectile2 === projectile)
                     console.log(projectileFound)
                     if (invaderFound && projectileFound) {
-                        score += 100
-                        console.log(score)
-                        scoreEl.innerHTML = score
+                        score += 100;
+                        console.log(score);
+                        explode.play();
+                        scoreEl.innerHTML = score;
                         createParticles({
                             object: invader,
                             fades: true
@@ -427,8 +438,8 @@ addEventListener('keydown', ({ key }) => {
             keys.d.pressed = true
             break
         case " ":
-            console.log(projectiles)
-            keys.space.pressed = true
+            console.log(projectiles);
+            keys.space.pressed = true;
             projectiles.push(
                 new Projectiles({
                     position: {
@@ -461,4 +472,3 @@ addEventListener('keyup', ({ key }) => {
 
     }
 })
-
