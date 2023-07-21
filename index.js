@@ -1,9 +1,12 @@
 const canvas = document.querySelector('canvas');
 const scoreEl = document.querySelector('#scoreEL');
+const scoreGame = document.querySelector('#scoreGame')
+const start = document.querySelector('.startScreem')
+const gameOver = document.querySelector('.game-over')
 const c = canvas.getContext('2d');
 
-canvas.width = innerWidth;
-canvas.height = innerHeight;
+canvas.width = 960
+canvas.height = innerHeight
 
 function preLoadsound() {
     backgroundMusic = document.querySelector('#backgroundMusic').play();
@@ -257,6 +260,7 @@ const keys = {
 }
 
 let score = 0
+let shootPower = 1
 let frames = 0
 let randomInterval = Math.floor(Math.random() * 500 + 500)
 let game = {
@@ -299,7 +303,8 @@ function createParticles({ object, color, fades }) {
 
 function animate() {
     if (!game.active) return
-    requestAnimationFrame(animate)
+
+    requestAnimationFrame(startGame)
     c.fillStyle = 'black'
     c.fillRect(0, 0, canvas.width, canvas.height)
     player.update()
@@ -337,13 +342,14 @@ function animate() {
             }, 0)
             setTimeout(() => {
                 game.active = false
-            }, 2000)
+            }, 1500)
             createParticles({
                 object: player,
                 color: "white",
                 fades: true
             })
-            console.log("You lose")
+            gameOver.style.display = 'block'
+
         }
     })
 
@@ -382,13 +388,12 @@ function animate() {
 
                     setTimeout(() => {
                         const invaderFound = grid.invaders.find((invader2) => invader2 === invader)
-                        console.log(invaderFound)
                         const projectileFound = projectiles.find((projectile2) => projectile2 === projectile)
-                        console.log(projectileFound)
                         if (invaderFound && projectileFound) {
-                            score += 100;
+                            score += 10;
                             explode.play();
                             scoreEl.innerHTML = score;
+                            scoreGame.innerHTML = score;
                             createParticles({
                                 object: invader,
                                 fades: true
@@ -435,8 +440,10 @@ function animate() {
     frames++
 }
 
-animate()
-
+function startGame(){
+    animate()
+    start.style.display = 'none'
+} 
 addEventListener('keydown', ({ key }) => {
 
     if (game.over) return
@@ -458,6 +465,7 @@ addEventListener('keydown', ({ key }) => {
             break
         case " ":
             keys.space.pressed = true;
+            
             shoot()
             
 
@@ -465,9 +473,13 @@ addEventListener('keydown', ({ key }) => {
 
     }
 })
+
 function shoot() {
-  
-    if (projectiles.length <= 1) { 
+    
+
+    if (projectiles.length <= shootPower) { 
+    console.log(shootPower)
+
         projectiles.push(
             new Projectiles({
                 position: {
@@ -482,7 +494,6 @@ function shoot() {
             )
         }
 }
-
 
 
 addEventListener('keyup', ({ key }) => {
