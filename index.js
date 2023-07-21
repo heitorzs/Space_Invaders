@@ -387,7 +387,6 @@ function animate() {
                         console.log(projectileFound)
                         if (invaderFound && projectileFound) {
                             score += 100;
-                            console.log(score);
                             explode.play();
                             scoreEl.innerHTML = score;
                             createParticles({
@@ -420,8 +419,7 @@ function animate() {
         player.rotation = (- .25)
 
     } else if (keys.d.pressed && player.position.x + player.width <= canvas.width ||
-        keys.ArrowRight.pressed && player.position.x + player.width <= canvas.width)
-    {
+        keys.ArrowRight.pressed && player.position.x + player.width <= canvas.width) {
         player.velocity.x = 7
         player.rotation = .25
     } else {
@@ -444,63 +442,66 @@ addEventListener('keydown', ({ key }) => {
     if (game.over) return
     switch (key) {
         case "a":
-            console.log("left")
             keys.a.pressed = true
             break
 
         case "ArrowLeft":
-            console.log("left")
             keys.ArrowLeft.pressed = true
             break
 
         case "d":
-            console.log("rigth")
             keys.d.pressed = true
             break
 
         case "ArrowRight":
-            console.log("rigth")
             keys.ArrowRight.pressed = true
             break
         case " ":
-            console.log(projectiles);
             keys.space.pressed = true;
-            projectiles.push(
-                new Projectiles({
-                    position: {
-                        x: player.position.x + player.width / 2,
-                        y: player.position.y
-                    },
-                    velocity: {
-                        x: 0,
-                        y: -10
-                    }
-                })
-            )
+            shoot()
+            
+
             break
 
     }
 })
+function shoot() {
+  
+    if (projectiles.length <= 1) { 
+        projectiles.push(
+            new Projectiles({
+                position: {
+                    x: player.position.x + player.width / 2,
+                    y: player.position.y
+                },
+                velocity: {
+                    x: 0,
+                    y: -10
+                }
+            })
+            )
+        }
+}
+
+
+
 addEventListener('keyup', ({ key }) => {
     switch (key) {
         case "a":
-            console.log("left")
             keys.a.pressed = false
             break
         case "ArrowLeft":
-            console.log("rigth")
             keys.ArrowLeft.pressed = false
             break
         case "d":
-            console.log("rigth")
             keys.d.pressed = false
             break
         case "ArrowRight":
-            console.log("rigth")
             keys.ArrowRight.pressed = false
             break
         case " ":
-            console.log("space")
+            keys.space.pressed = false;
+
             break
 
     }
